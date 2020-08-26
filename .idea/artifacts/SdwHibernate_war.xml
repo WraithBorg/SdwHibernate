@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="SdwHibernate:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>SdwHibernate</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="SdwHibernate-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="SdwHibernate:war exploded" />
+    </root>
+  </artifact>
+</component>

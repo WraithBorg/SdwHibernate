@@ -1,0 +1,215 @@
+﻿// {{{ 保存user
+	// Session session = sessionFactory.openSession();
+	// Transaction tx = session.beginTransaction();
+	// User user = new User();
+	// user.setId("u002");
+	// user.setName("二手东");
+	// user.setSex(true);
+	// user.setAge(12);
+	// session.save(user);
+	// tx.commit();
+	// }}}
+	//
+	//{{{ 级联保存用户和订单
+	//	Session session = sessionFactory.openSession();
+	//	Transaction tx = session.beginTransaction();
+	//	Customer customer = new Customer();
+	//	customer = (Customer)session.get(Customer.class,new Long(2));
+	//	Order order = new Order();
+	//	order.setOrderNumber("红茶订单");
+	//	order.setCustomer(customer);
+	//	session.save(order);
+	//	tx.commit();
+	//}}}
+	//
+	//{{{ 查询某个customer下的所有订单
+	//	Session session = sessionFactory.openSession();
+	//	Customer customer = new Customer();
+	//	customer = (Customer)session.get(Customer.class,new Long(2));
+	//	Set orders = customer.getOrder();
+	//	Iterator it = orders.iterator();
+	//	while(it.hasNext()){
+	//		Order o = (Order)it.next();
+	//		System.out.println(o.getOrderNumber());
+	//	}
+	//	System.out.println();
+	//}}}
+	//
+	//{{{ hql 查询
+	//	Session session = sessionFactory.openSession();
+	//	Query query = session.createQuery("from User");
+	//	List<User> list = (List<User>) query.list();
+	//	for (int i = 0; i < list.size(); i++) {
+	//		System.out.println(list.get(i).getName());
+	//	}
+	//}}}
+	//
+	// {{{ Criteria 查询user
+	// Session session = sessionFactory.openSession();
+	// Criteria criteria = session.createCriteria(User.class);
+	// Criterion criterion1 = Restrictions.like("name", "%东");
+	// Criterion criterion2 = Restrictions.eq("age", new Integer(12));
+	// criteria.add(criterion1);
+	// criteria.add(criterion2);
+	// List<User> list = (List<User>) criteria.list();
+	// System.out.println(list.get(0).getName()+"\n"+list.get(1).getName());
+	//--criteria.setMaxResults(1).uniqueResult();
+	// }}}
+	//
+	// {{{ QBE 查询user
+	// Session session = sessionFactory.openSession();
+	// User user = new User();
+	// user.setAge(12);
+	// //-user.setSex(true);
+	// List<User> list =
+	// (List<User>)session.createCriteria(User.class).add(Example.create(user)).list();
+	// //查询 与user条件相同的对象
+	// //-select this_.ID as ID1_3_0_, this_.NAME as NAME2_3_0_, this_.SEX as
+	// SEX3_3_0_, this_.AGE as AGE4_3_0_ from USER this_ where (
+	// //-this_.SEX=? and this_.AGE=?)
+	// //打印出的sql 会按 属性 布尔类型的默认值查询,但是criteria 则不会
+	// System.out.println(list.get(0).getName());
+	// }}}
+	//
+	// {{{ Query 查询user
+	//	Session session = sessionFactory.openSession();
+	//	Query query = session.createSQLQuery("SELECT * FROM USER WHERE NAME LIKE :cname AND AGE =:cage").addEntity(User.class);
+	//	query.setString("cname", "%东");
+	//	query.setInteger("cage", 12);
+	//	List<User> list = (List<User>) query.list();
+	//	System.out.println(list.get(0).getName()+"\n"+list.get(1).getName());
+	// }}}
+	//
+	//{{{ 可滚动结果集
+	//	Session session = sessionFactory.openSession();
+	//	Query query = session.createQuery("from User");
+	//	ScrollableResults rs = query.scroll();
+	//	rs.first();
+	//	Object[] obj = rs.get(); 
+	//	User user = (User) obj[0];
+	//	System.out.println(user.getName());
+	//	rs.scroll(2);
+	//	User user2 = (User)rs.get(0);
+	//	System.out.println(user2.getName());
+	//	rs.close();
+	//}}}
+	//
+	//{{{ 查询返回结果类型
+	//	Session session = sessionFactory.openSession();
+	//	Double age = (Double)session.createQuery("select avg(u.age) from User u").uniqueResult();
+	//	System.out.println(age.getClass().getName());//java.lang.Double
+	//}}}
+	//
+	//{{{ 查询平均年龄
+	//	Session session = sessionFactory.openSession();
+	//	Double age = (Double)session.createQuery("select avg(u.age) from User u").uniqueResult();
+	//	System.out.println(age);
+	//}}}
+	//
+	//{{{ 查询最大年龄和最小年龄
+	//	Session session = sessionFactory.openSession();
+	//	Object[] age = (Object[])session.createQuery("select max(u.age),min(u.age) from User u").uniqueResult();
+	//	Integer max = (Integer) age[0];
+	//	Integer min = (Integer) age[1];
+	//	System.out.println(max);
+	//	System.out.println(min);
+	//}}}
+	//
+	//{{{ 统计不同name的User
+	//	Session session = sessionFactory.openSession();
+	//	Long count = (Long)session.createQuery("select count(distinct u.name) from User u").uniqueResult();
+	//	System.out.println(count);
+	//}}}
+	//
+	//{{{ 查询性别相同的User的年龄总和
+	//	Session session = sessionFactory.openSession();
+	//	Iterator it = (Iterator)session.createQuery("select u.sex,count(u.age) from User u group by u.sex").list().iterator();
+	//	while(it.hasNext()){
+	//		Object[] pair = (Object[]) it.next(); 
+	//		Boolean name = (Boolean) pair[0];
+	//		Long count = (Long) pair[1];
+	//		System.out.println(name + "---" + count);
+	//	}
+	//}}}
+	//
+	//{{{ 查询所有用户下的订单数时
+	//	Session session = sessionFactory.openSession();
+	//	Iterator it = session.createQuery("select c.id,c.name,count(o) from Customer c left join c.order o group by c.id ").list().iterator();
+	//	while(it.hasNext()){
+	//		Object[] pair = (Object[]) it.next();
+	//		Long id = (Long) pair[0];
+	//		String name = (String) pair[1];
+	//		Long count = (Long) pair[2];
+	//		System.out.println(id+"--"+name+"--"+count);
+	//	}
+	//}}}
+	//
+	//{{{ 计算每个用户的订单总金额
+	//	Session session = sessionFactory.openSession();
+	//	Iterator it = session.createQuery("select c.id,c.name,sum(o.price) from Customer c left join c.order o group by c.id ").list().iterator();
+	//	while(it.hasNext()){
+	//		Object[] pair = (Object[]) it.next();
+	//		Long id = (Long) pair[0];
+	//		String name = (String) pair[1];
+	//		BigDecimal count = (BigDecimal) pair[2];
+	//		System.out.println(id+"--"+name+"--"+count);
+	//	}
+	//}}}
+	//
+	//{{{  计算每个用户的订单总金额（大于0的）
+	//	Session session = sessionFactory.openSession();
+	//	Iterator it = session.createQuery("select c.id,c.name,sum(o.price) from Customer c left join c.order o group by c.id having sum(o.price) >0 ").list().iterator();
+	//	while(it.hasNext()){
+	//		Object[] pair = (Object[]) it.next();
+	//		Long id = (Long) pair[0];
+	//		String name = (String) pair[1];
+	//		BigDecimal count = (BigDecimal) pair[2];
+	//		System.out.println(id+"--"+name+"--"+count);
+	//	}
+	//}}}
+	//
+	//{{{ Sql 查询
+	//	Session session = sessionFactory.openSession();
+	//	String sql = "select * from USER";
+	//	Query query = session.createSQLQuery(sql);
+	//	List result = query.list();
+	//	Iterator it = result.iterator();
+	//	while(it.hasNext()){
+	//		Object[] row = (Object[]) it.next();
+	//		String id = (String) row[0];
+	//		String name = (String) row[1];
+	//		Integer age = (Integer) row[3];
+	//		System.out.println(id+"--"+name+"--"+age);
+	//	}
+	//}}}
+	//
+	//{{{ 转换Sql 查询的结果
+	//	Session session = sessionFactory.openSession();
+	//	String sql = "select * from USER";
+	//	Query query = session.createSQLQuery(sql).addScalar("id",StringType.INSTANCE).addScalar("name",StringType.INSTANCE).addScalar("age",IntegerType.INSTANCE);
+	//	List result = query.list();
+	//	Iterator it = result.iterator();
+	//	while(it.hasNext()){
+	//		Object[] row = (Object[]) it.next();
+	//		String id = (String) row[0];
+	//		String name = (String) row[1];
+	//		Integer age = (Integer) row[2];//这里是2 不是三
+	//		System.out.println(id+"--"+name+"--"+age);
+	//	}
+	//}}}
+	//
+	//{{{ 映射实体类
+	//	Session session = sessionFactory.openSession();
+	//	String sql = "select * from USER";
+	//	Query query = session.createSQLQuery(sql).addEntity(User.class);
+	//	List result = query.list();
+	//	Iterator it = result.iterator();
+	//	while(it.hasNext()){
+	//		User user = (User)it.next();
+	//		System.out.println(user.getName());
+	//	}
+	//}}}
+	//
+	//
+	//
+	//

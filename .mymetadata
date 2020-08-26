@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="SdwHibernate"
+  id="myeclipse.1481544835288"
+  context-root="/SdwHibernate"
+  j2ee-spec="6.0"
+  archive="SdwHibernate.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+
